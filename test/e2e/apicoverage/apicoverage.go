@@ -44,7 +44,7 @@ type apiData struct {
 
 type apiArray []apiData
 
-var reOpenapi = regexp.MustCompile(`({\S+})`)
+var reOpenapi = regexp.MustCompile(`({\S+?})`)
 
 func parseOpenAPI(openapi string) apiArray {
 	var swaggerSpec spec.Swagger
@@ -111,9 +111,11 @@ func parseAPILog(restlog string) apiArray {
 		}
 		method := strings.ToUpper(string(result[1]))
 		url := string(result[2])
+		url_parts := strings.Split(url, "?")
+
 		api := apiData{
 			Method: method,
-			URL:    url,
+			URL:    url_parts[0],
 		}
 		apisLog = append(apisLog, api)
 	}
@@ -140,7 +142,7 @@ func main() {
 	apisLogs := parseAPILog(*restLog)
 
 	for _, openapi := range apisOpenapi {
-		regURL := reOpenapi.ReplaceAllLiteralString(openapi.URL, `\S+`)
+		regURL := reOpenapi.ReplaceAllLiteralString(openapi.URL, `[^/\s]+`) + `$`
 		reg := regexp.MustCompile(regURL)
 		found = false
 		for _, log := range apisLogs {
