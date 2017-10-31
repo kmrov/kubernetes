@@ -111,11 +111,11 @@ func parseAPILog(restlog string) apiArray {
 		}
 		method := strings.ToUpper(string(result[1]))
 		url := string(result[2])
-		url_parts := strings.Split(url, "?")
+		urlParts := strings.Split(url, "?")
 
 		api := apiData{
 			Method: method,
-			URL:    url_parts[0],
+			URL:    urlParts[0],
 		}
 		apisLog = append(apisLog, api)
 	}
